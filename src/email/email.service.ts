@@ -30,7 +30,7 @@ export class EmailService {
     let msg: string = ''
     await this.nodeEmail.sendMail(mail).then(async () => {
       msg = '验证码发送成功'
-      await this.redis.set(email, code, 'EX', 100000);
+      await this.redis.set(email, code, 'EX', 60);
     }).catch(() => {
       throw new HttpException('验证码发送失败 ', HttpStatus.BAD_REQUEST)
     })

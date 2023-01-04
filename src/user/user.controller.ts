@@ -22,10 +22,13 @@ export class UserController {
 
     await this.userService.vaildConfirmPassword(createUserDto.password, createUserDto.confirmPassword)
 
+    await this.userService.validEmail(createUserDto.email)
+
     await this.emailService.validCaptcha(createUserDto.email, createUserDto.captcha)
 
-    return await this.userService.registerUser(createUserDto.username, createUserDto.password, createUserDto.email)
+    await this.userService.registerUser(createUserDto.username, createUserDto.password, createUserDto.email)
 
+    return '注册成功'
   }
 
 

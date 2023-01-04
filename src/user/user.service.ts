@@ -6,11 +6,15 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs'
 import { AuthService } from 'src/auth/auth.service';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private readonly user: Repository<User>, private readonly authService: AuthService) { }
+  constructor(@InjectRepository(User) private readonly user: Repository<User>,
+    private readonly authService: AuthService,
+    @InjectRedis() private readonly redis: Redis) { }
 
 
   // 通过email查找用户
@@ -21,6 +25,18 @@ export class UserService {
       }
     })
   }
+
+  //验证email是否唯一
+  async validEmail(email: string) {
+    let result = await this.findUserByEmail(email)
+    if (result.length === 0) {
+      return true
+    }
+    else {
+      throw new HttpException('邮箱已存在', HttpStatus.BAD_REQUEST)
+    }
+  }
+
 
   // 通过username查找用户
   async findUserByUsername(username: string) {
@@ -57,8 +73,8 @@ export class UserService {
   //注册用户
   async registerUser(username: string, password: string, email: string) {
     password = bcrypt.hashSync(password, 10)
-
-    return await this.user.save({ username, password, email })
+    await this.user.save({ username, password, email })
+    this.redis.del(email)
   }
 
 
@@ -92,9 +108,9 @@ export class UserService {
   }
 
 
-  async updateUser(){
+  async updateUser() {
 
-    
+
 
 
   }
