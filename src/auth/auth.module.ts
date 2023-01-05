@@ -13,10 +13,9 @@ import { User } from 'src/user/entities/user.entity';
   imports: [JwtModule.registerAsync({
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) => {
-   
       return {
         secret: configService.get('SECRET'),
-        signOptions: { expiresIn: '4h' },
+        signOptions: {  },
       };
     }
   }),TypeOrmModule.forFeature([User]),forwardRef(() => UserModule)],

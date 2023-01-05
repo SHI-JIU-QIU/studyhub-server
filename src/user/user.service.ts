@@ -93,7 +93,7 @@ export class UserService {
   //登录
   async login(username: string, password: string) {
     let result = await this.findUserByUsername(username)
-    console.log(result);
+    
     if (result.length === 0) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
     }
