@@ -45,21 +45,30 @@ export class UserController {
     return req.user
   }
 
-  
-  @Put('updatePassword')
-  async updatePassword(@Body() updateUserDto:UpdateUserDto){
-    console.log(updateUserDto);
-    
-    await this.userService.vaildEmailByUsername(updateUserDto.username,updateUserDto.email)
 
-    await this.emailService.validCaptcha(updateUserDto.email,updateUserDto.captcha)
+  @Put('updatePassword')
+  async updatePassword(@Body() updateUserDto: UpdateUserDto) {
+    console.log(updateUserDto);
+
+    await this.userService.vaildEmailByUsername(updateUserDto.username, updateUserDto.email)
+
+    await this.emailService.validCaptcha(updateUserDto.email, updateUserDto.captcha)
 
     await this.userService.vaildConfirmPassword(updateUserDto.password, updateUserDto.confirmPassword)
 
-    await this.userService.updatePassword(updateUserDto.username,updateUserDto.password)
+    await this.userService.updatePassword(updateUserDto.username, updateUserDto.password)
 
     return '修改成功'
 
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('updateUser')
+  async updateUser(@Req() req, @Body() updateUserDto) {
+    
+    await this.userService.updateUser(req.user.id , updateUserDto)
+
+    return '修改成功'
   }
 
 

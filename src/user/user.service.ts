@@ -12,6 +12,7 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class UserService {
+  
   constructor(@InjectRepository(User) private readonly user: Repository<User>,
     private readonly authService: AuthService,
     @InjectRedis() private readonly redis: Redis) { }
@@ -123,6 +124,12 @@ export class UserService {
     if(result.length==0||result[0].username!=username){
       throw new HttpException('用户名与邮箱不一致',HttpStatus.BAD_REQUEST)
     }
+
+  }
+
+  async updateUser(id: string, updateUser: any) {
+  
+    await this.user.update(id,updateUser)
 
   }
 
