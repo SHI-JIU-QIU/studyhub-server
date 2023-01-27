@@ -93,7 +93,7 @@ export class UserService {
   //登录
   async login(username: string, password: string) {
     let result = await this.findUserByUsername(username)
-    
+
     if (result.length === 0) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
     }
@@ -108,14 +108,23 @@ export class UserService {
   }
 
 
-  async updateUser() {
-
-
-
-
+  async updatePassword(username: string, password: string) {
+    let userList = await this.findUserByUsername(username)
+    
+    const user = await this.user.preload(userList[0])
+    console.log(user);
+    user.password = password
+    
+    await this.user.save(user)
   }
 
+  async vaildEmailByUsername(username:string,email:string){
+    const result = await this.findUserByEmail(email)
+    if(result.length==0||result[0].username!=username){
+      throw new HttpException('用户名与邮箱不一致',HttpStatus.BAD_REQUEST)
+    }
 
+  }
 
 
 

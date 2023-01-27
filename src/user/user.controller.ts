@@ -45,11 +45,20 @@ export class UserController {
     return req.user
   }
 
-  @Put('update')
-  async update(@Body() updateUserDto:UpdateUserDto){
+  
+  @Put('updatePassword')
+  async updatePassword(@Body() updateUserDto:UpdateUserDto){
+    console.log(updateUserDto);
     
-    
+    await this.userService.vaildEmailByUsername(updateUserDto.username,updateUserDto.email)
 
+    await this.emailService.validCaptcha(updateUserDto.email,updateUserDto.captcha)
+
+    await this.userService.vaildConfirmPassword(updateUserDto.password, updateUserDto.confirmPassword)
+
+    await this.userService.updatePassword(updateUserDto.username,updateUserDto.password)
+
+    return '修改成功'
 
   }
 

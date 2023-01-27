@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToMany, JoinTable } from "typeorm";
-import bcrypt from 'bcryptjs'
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToMany, JoinTable, BeforeUpdate } from "typeorm";
+import * as bcrypt from 'bcryptjs';
 import { Exclude } from "class-transformer";
 import { Partition } from "src/partition/entities/partition.entity";
-import { partition } from "rxjs";
+
 
 
 @Entity()
@@ -57,6 +57,7 @@ export class User {
     city: string
 
     @BeforeInsert()
+    @BeforeUpdate()
     async encryptPwd() {
         if (!this.password) return;
         this.password = await bcrypt.hashSync(this.password, 10);
