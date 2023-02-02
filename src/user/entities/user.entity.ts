@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToMany, JoinTable, BeforeUpdate } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, ManyToMany, JoinTable, BeforeUpdate, OneToMany, Tree, TreeChildren } from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from "class-transformer";
 import { Partition } from "src/partition/entities/partition.entity";
@@ -6,6 +6,7 @@ import { Partition } from "src/partition/entities/partition.entity";
 
 
 @Entity()
+
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string

@@ -30,7 +30,6 @@ export class Partition {
 
 
     @ManyToMany(()=>User,user =>user.partitions)
-  
     users:User[]
 
 }

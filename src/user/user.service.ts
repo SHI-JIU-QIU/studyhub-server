@@ -3,19 +3,23 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs'
 import { AuthService } from 'src/auth/auth.service';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
+import { Fans } from './entities/fans.entity';
 
 
 @Injectable()
 export class UserService {
+ 
   
   constructor(@InjectRepository(User) private readonly user: Repository<User>,
+  @InjectRepository(Fans) private readonly fans: Repository<Fans>,
     private readonly authService: AuthService,
-    @InjectRedis() private readonly redis: Redis) { }
+    @InjectRedis() private readonly redis: Redis,
+    ) { }
 
 
   // 通过email查找用户
@@ -111,7 +115,6 @@ export class UserService {
 
   async updatePassword(username: string, password: string) {
     let userList = await this.findUserByUsername(username)
-    
     const user = await this.user.preload(userList[0])
     console.log(user);
     user.password = password
@@ -131,6 +134,16 @@ export class UserService {
   
     await this.user.update(id,updateUser)
 
+  }
+
+  async followUser(id: any, userId: string) {
+    await this.fans.save({followId:userId,fansId:id})
+    
+  }
+
+  async unFollowUser(id: any, userId: string) {
+    await this.fans.delete({followId:userId,fansId:id})
+    
   }
 
 

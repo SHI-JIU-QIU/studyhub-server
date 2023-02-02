@@ -71,6 +71,19 @@ export class UserController {
     return '修改成功'
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('follow')
+  async  followUser(@Req() req,@Body('userId') userId:string) {
+    await this.userService.followUser(req.user.id,userId)
+    
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('unFollow')
+  async  unFollowUser(@Req() req, @Body('userId') userId:string) {
+    await this.userService.unFollowUser(req.user.id,userId)
+    
+  }
 
 
 }

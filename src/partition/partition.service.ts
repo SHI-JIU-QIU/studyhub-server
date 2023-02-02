@@ -17,7 +17,7 @@ export class PartitionService {
 
 
   constructor(@InjectRepository(Partition) private readonly partition: Repository<Partition>,
-    private readonly dataSource: DataSource) { this.dataSource = new DataSource(MYSQLCONFIG) }
+    private readonly dataSource: DataSource) {  }
 
 
 
@@ -39,7 +39,7 @@ export class PartitionService {
   //投票并关注
   async votePartition(userId: string, partitionId: string) {
     
-    await this.dataSource.initialize()
+    // await this.dataSource.initialize()
     const partition = new Partition()
     const user = new User()
     partition.id = partitionId
