@@ -1,15 +1,21 @@
 import { InjectRedis, } from '@liaoliaots/nestjs-redis';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
 export class AuthService {
+
+
+
   constructor(
     @InjectRedis() private readonly redis: Redis,
-    private readonly jwtService: JwtService) { }
+    public readonly jwtService: JwtService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,) { }
 
   createToken(user: Partial<User>) {
     return this.jwtService.sign(user)
@@ -20,9 +26,9 @@ export class AuthService {
       id: user.id,
       username: user.username,
     });
-
     await this.redis.set(user.id, token, 'EX', 6 * 60 * 60)
-
-    return { token }
+    const userInfo =  await this.userService.findUserById(user.id)
+    
+    return { token ,userInfo}
   }
 }

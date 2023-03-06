@@ -16,17 +16,6 @@ export class Partition {
     })
     avatarUrl:string
 
-    @Column({
-        nullable:false,
-        default:0
-    })
-    vote:number
-
-    @Column({
-        nullable:false,
-        default:0
-    })
-    status:number
 
 
     @ManyToMany(()=>User,user =>user.partitions)

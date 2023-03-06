@@ -31,6 +31,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const redisToken = await this.redis.get(tokenUser.id)
         const originToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
+  
+        
         // console.log(originToken,redisToken );
         if (redisToken != originToken) {
             throw new UnauthorizedException('您账户已经在另一处登陆，请重新登陆')

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,7 +17,8 @@ export class UserService {
   
   constructor(@InjectRepository(User) private readonly user: Repository<User>,
   @InjectRepository(Fans) private readonly fans: Repository<Fans>,
-    private readonly authService: AuthService,
+  @Inject(forwardRef(() => AuthService))
+  private readonly authService: AuthService,
     @InjectRedis() private readonly redis: Redis,
     ) { }
 
@@ -99,6 +100,7 @@ export class UserService {
   async login(username: string, password: string) {
     let result = await this.findUserByUsername(username)
 
+    
     if (result.length === 0) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
     }

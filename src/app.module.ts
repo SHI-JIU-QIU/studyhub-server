@@ -13,13 +13,14 @@ import REDISCONFIG from './config/redis.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { PartitionModule } from './partition/partition.module';
+import { ChatModule } from './chat/chat.module';
 
 
 
 @Module({
   imports: [RedisModule.forRoot({
     config: REDISCONFIG
-  }),ConfigModule.forRoot({isGlobal:true}), DatabaseModule, UserModule, EmailModule, PostModule, CommentModule, CommodityModule, AuthModule, PartitionModule],
+  }),ConfigModule.forRoot({isGlobal:true}), DatabaseModule, UserModule, EmailModule, PostModule, CommentModule, CommodityModule, AuthModule, PartitionModule, ChatModule],
   controllers: [AppController],
   providers: [AppService],
 })

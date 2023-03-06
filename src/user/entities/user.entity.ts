@@ -17,6 +17,12 @@ export class User {
     username: string
 
     @Column({
+        nullable: false,
+        default: 'sh' + new Date().getTime()
+    })
+    nickname: string
+
+    @Column({
         nullable: false
     })
     @Exclude()
@@ -57,21 +63,34 @@ export class User {
     })
     city: string
 
+    @Column({
+        nullable: true,
+        default: 0
+    })
+    points: number
+
+    @Column({
+        nullable: false,
+    })
+    role:number
+
+
+
+    @ManyToMany(() => Partition, partition => partition.users, {
+        cascade: true
+    })
+    @JoinTable({
+        name: 'user_partition',
+        joinColumns: [{ name: 'user_id' }],
+        inverseJoinColumns: [{ name: 'partition_id' }],
+    })
+    partitions: Partition[];
+
     @BeforeInsert()
     @BeforeUpdate()
     async encryptPwd() {
         if (!this.password) return;
         this.password = await bcrypt.hashSync(this.password, 10);
     }
-
-    @ManyToMany(() => Partition,partition => partition.users)
-    @JoinTable({
-        name: 'user_partition',
-        joinColumns: [{ name: 'user_id' }],
-        inverseJoinColumns: [{ name: 'partition_id' }],
-      })
-    partitions: Partition[];
-
-
 
 }

@@ -7,7 +7,6 @@ import { Partition } from './entities/partition.entity';
 import * as fs from 'fs'
 import { extname, join } from 'path';
 import { DataSource } from "typeorm";
-import MYSQLCONFIG from 'src/config/db.config';
 import { User } from 'src/user/entities/user.entity';
 
 
@@ -17,7 +16,7 @@ export class PartitionService {
 
 
   constructor(@InjectRepository(Partition) private readonly partition: Repository<Partition>,
-    private readonly dataSource: DataSource) {  }
+    private readonly dataSource: DataSource) { }
 
 
 
@@ -36,27 +35,41 @@ export class PartitionService {
 
 
 
-  //投票并关注
-  async votePartition(userId: string, partitionId: string) {
-    
-    // await this.dataSource.initialize()
+  //关注
+  async followPartition(userId: string, partitionId: string) {
+
+
     const partition = new Partition()
     const user = new User()
     partition.id = partitionId
-    partition.vote = 1
     user.id = userId
     partition.users = [user]
-    console.log(partition);
+    await this.dataSource.manager.save(partition)
 
-    return await this.dataSource.manager.save(partition)
+  }
 
+  async unFollowPartition(userId: string, partitionId: string) {
+    const user = await this.dataSource.getRepository(User).findOne({
+      where: {
+        id: userId
+      },
+      relations: {
+        partitions: true,
+    },
+    })
+    console.log(user.partitions);
+    
+    user.partitions = user.partitions.filter((partition) => {
+      return partition.id !== partitionId
+    })
+    await this.dataSource.manager.save(user)
 
   }
 
 
   //查找分区
-  async findPartitionByPartitionName(partitionName: string) {    
-   return await this.partition.find({
+  async findPartitionByPartitionName(partitionName: string) {
+    return await this.partition.find({
       where: {
         partitionName
       }

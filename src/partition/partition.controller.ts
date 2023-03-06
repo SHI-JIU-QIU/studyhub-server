@@ -29,11 +29,21 @@ export class PartitionController {
   }
 
 
-  @Post('vote')
+  @Post('followPartition')
   @UseGuards(AuthGuard('jwt'))
-  async votePartition(@Req() req, @Body('partitionId') partitionId) {
-    console.log(req.user);
-    return await this.partitionService.votePartition(req.user.id, partitionId)
+  async followPartition(@Req() req, @Body('partitionId') partitionId) {
+
+    await this.partitionService.followPartition(req.user.id, partitionId)
+    return '关注成功'
+
+  }
+
+  @Delete('unfollowPartition')
+  @UseGuards(AuthGuard('jwt'))
+  async unFollowPartition(@Req() req, @Body('partitionId') partitionId) {
+
+    await this.partitionService.unFollowPartition(req.user.id, partitionId)
+    return '已取消关注'
 
   }
 

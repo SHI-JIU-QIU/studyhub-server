@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/exceptions/base.exception.filter';
@@ -13,7 +13,8 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname,'/images'),{
     prefix:'/images'
   })
-  app.useGlobalFilters(new AllExceptionsFilter)
+
+  app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)))
   app.useGlobalInterceptors(new TransformInterceptor)
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(3000);

@@ -18,7 +18,7 @@ export class UserController {
   async register(@Body() createUserDto: CreateUserDto) {
     console.log(createUserDto);
 
-    await this.userService.validUsername(createUserDto.username)
+    this.userService.validUsername(createUserDto.username)
 
     await this.userService.vaildConfirmPassword(createUserDto.password, createUserDto.confirmPassword)
 
